@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 function Login() {
+  document.title = "Login | Sistem Informasi Freelance Marketplace";
   const [showPassword, setShowPassword] = useState(false);
   const {
     register,
@@ -32,6 +32,13 @@ function Login() {
       }
     }
   };
+  //check if token exist
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/freelancer/dashboard");
+    }
+  }, [navigate]);
+
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="flex flex-col bg-white drop-shadow-2xl p-10">
@@ -86,7 +93,6 @@ function Login() {
           </Link>
         </div>
       </div>
-      <ToastContainer position="top-center" autoClose={2500} hideProgressBar newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
     </div>
   );
 }

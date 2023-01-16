@@ -61,20 +61,24 @@ function Verification() {
     return () => clearInterval(interval);
   }, [countdown]);
 
-  //cek apakah token ada di localstorage
+  //cek apakah token ada di localstorage & apakah sudah verifikasi wa
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    !token && navigate("/freelancer/login");
+    try {
+      if (!localStorage.getItem("token")) {
+        navigate("/freelancer/login");
+      } else {
+        const token = localStorage.getItem("token");
+        const decoded = jwt_decode(token);
+        const isWaVerified = decoded.isWaVerified;
+        isWaVerified && navigate("/freelancer/dashboard");
+        setNowa(decoded.nowa);
+      }
+    } catch (err) {
+      localStorage.clear();
+      console.log(err);
+    }
   }, []);
 
-  //cek apakah isWaVerified true
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const decoded = jwt_decode(token);
-    const isWaVerified = decoded.isWaVerified;
-    isWaVerified && navigate("/freelancer/dashboard");
-    setNowa(decoded.nowa);
-  }, []);
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="flex flex-col bg-white drop-shadow-2xl p-10">

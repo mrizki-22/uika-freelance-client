@@ -74,6 +74,13 @@ function Signup() {
     });
   }, [facultyId]);
 
+  //check if token exist
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/freelancer/dashboard");
+    }
+  }, [navigate]);
+
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="flex flex-col bg-white drop-shadow-2xl p-10">

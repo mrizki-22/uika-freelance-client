@@ -1,7 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import jwt_decode from "jwt-decode";
 import Sidebar from "../../components/Sidebar";
+import AddService from "../../components/AddService";
+import InfoIcon from "@mui/icons-material/Info";
+import Services from "./Services";
+import EditService from "../../components/EditService";
+import EditProfile from "../../components/EditProfile";
 
 const greetings = (name) => {
   const date = new Date();
@@ -20,24 +25,44 @@ const greetings = (name) => {
 };
 
 function Dashboard() {
+  document.title = "Dashboard | Sistem Informasi Freelance Marketplace";
   const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [isVerified, setIsVerified] = useState(false);
 
-  //cek token
+  //cek token & wa verification
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    !token && navigate("/freelancer/login");
-  }, []);
-
-  //cek isWaVerified
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const decoded = jwt_decode(token);
-    const isWaVerified = decoded.isWaVerified;
-    !isWaVerified && navigate("/freelancer/verification");
+    try {
+      if (!localStorage.getItem("token")) {
+        navigate("/freelancer/login");
+      } else {
+        const token = localStorage.getItem("token");
+        const decoded = jwt_decode(token);
+        //check role
+        const role = decoded.role;
+        if (role !== "freelancer") {
+          localStorage.clear();
+          navigate("/freelancer/login");
+        }
+        const isWaVerified = decoded.isWaVerified;
+        !isWaVerified && navigate("/freelancer/verification");
+        setName(decoded.name);
+        setIsVerified(decoded.isVerified);
+      }
+    } catch (err) {
+      localStorage.clear();
+      console.log(err);
+    }
   }, []);
 
   return (
     <div className="flex">
+      {!isVerified && (
+        <div className="flex space-x-3 items-center fixed w-[350px] bg-white drop-shadow-lg z-10 right-5 top-5 p-3 rounded-md">
+          <InfoIcon className="text-blue-500" />
+          <p className="text-space-cadet">Akun sedang diverifikasi, silahkan login ulang saat menerima pesan whatsapp</p>
+        </div>
+      )}
       <div>
         <Sidebar />
       </div>
@@ -47,13 +72,18 @@ function Dashboard() {
             case "/freelancer/dashboard":
               return (
                 <div className="flex items-center justify-center h-[90vh] whitespace-pre-wrap text-center text-2xl font-light">
-                  <div>{greetings(jwt_decode(localStorage.getItem("token")).name)}</div>
+                  <div>{greetings(name)}</div>
                 </div>
               );
             case "/freelancer/services":
-              return "Jasa";
+              return <Services isVerified={isVerified} />;
             case "/freelancer/profile":
-              return "profile";
+              return <EditProfile />;
+            case "/freelancer/add-service":
+              return <AddService />;
+            //if case include edit-service, return AddService component
+            case "/freelancer/edit-service":
+              return <EditService />;
           }
         })()}
       </div>

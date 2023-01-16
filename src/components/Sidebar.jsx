@@ -5,6 +5,7 @@ import PermIdentityIcon from "@mui/icons-material/PermIdentity";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
+import { Tooltip } from "@mui/material";
 
 function Sidebar() {
   const navigate = useNavigate();
@@ -29,8 +30,9 @@ function Sidebar() {
             {/* brand */}
             <div id="brand" className="">
               <Link to={"/freelancer/dashboard"}>
-                <div className="flex items-end space-x-2 px-3 justify-center" href="/admin/dashboard">
-                  <h1 className="font-bold text-2xl text-white m-0 p-0 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-green-600 hover:to-green-500 transition duration-500 ease-in-out">UIKA Freelance</h1>
+                <div className="flex items-end space-x-2 px-3 justify-center hover:text-[#DAA92E] duration-300 ease-in-out font-bold text-2xl text-white">
+                  <h1>UIKA</h1>
+                  <h1 className="font-lobster ">Freelance</h1>
                 </div>
               </Link>
             </div>
@@ -51,7 +53,9 @@ function Sidebar() {
           </div>
           <div className="flex space-x-1 text-white">
             <div onClick={handleLogout} className="cursor-pointer">
-              <LogoutIcon style={{ color: "white" }} />
+              <Tooltip title="Logout" placement="bottom-start">
+                <LogoutIcon style={{ color: "white" }} />
+              </Tooltip>
             </div>
           </div>
         </div>
