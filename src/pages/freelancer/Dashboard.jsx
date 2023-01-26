@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import Sidebar from "../../components/Sidebar";
 import AddService from "../../components/AddService";
@@ -27,6 +27,7 @@ const greetings = (name) => {
 function Dashboard() {
   document.title = "Dashboard | Sistem Informasi Freelance Marketplace";
   const navigate = useNavigate();
+  const location = useLocation();
   const [name, setName] = useState("");
   const [isVerified, setIsVerified] = useState(false);
 
@@ -53,7 +54,19 @@ function Dashboard() {
       localStorage.clear();
       console.log(err);
     }
-  }, []);
+    console.log("dashboard rendered");
+  }, [location]);
+
+  //cek isVerified
+  useEffect(() => {
+    if (isVerified) {
+      const token = localStorage.getItem("token");
+      const decoded = jwt_decode(token);
+      const isWaVerified = decoded.isWaVerified;
+      console.log(isWaVerified);
+      !isWaVerified && navigate("/freelancer/verification");
+    }
+  }, [isVerified]);
 
   return (
     <div className="flex">
